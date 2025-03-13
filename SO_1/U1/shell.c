@@ -7,25 +7,36 @@
 
 int main(){
     int a;
-    char* buffer = malloc(sizeof(char)*100);
-    int flag = 1;
-    pid_t pid=fork();
-    int fd
-    if(pid==0){
-        scanf("%[^\n]",buffer);
-        fd=open("shell.txt",'w');
-        write(fd,buffer,100);
-        sleep(1);
+    //pid_t pid=fork();
+    const char s[2]="\n";
+    char* token;
+    while(1){
+        
+        pid_t pid=fork();
+        
+        if(pid==0){
+            char* buffer = malloc(sizeof(char)*30);
+            fgets(buffer,30,stdin);
+            token=strtok(buffer,s);
+            printf("Buffer:%s\n Token:%s\n",buffer,token);
+            if(!strcmp(buffer,"exit")){exit(0);}
+
+
+
+            //scanf("%[^\n]",buffer);
+            //fd=open("shell.txt",'w');
+            //write(fd,buffer,100);
+            
+            
+            //bailalo ROCKY : )
+            execl(token,token,NULL);
+            free(buffer);
+        }
+        else{
+            wait(&a);
+        //    printf("\nclear buffer\n");
+        }
+    
     }
-    else{
-        wait(&a)
-        fd=open("shell.txt",'r');
-        read(fd,buffer,100);
-        strtok(buffer,' ');
-        strcmp(buffer,"hola\n");
-        if(strcmp(buffer,"hola\n")) execl("./test","./test",NULL);
-        else {printf("Hola mundown");}
-    }
-    if(pid>0 && !strcmp(buffer,"exit")){flag=0;}
     return 0;
 }
