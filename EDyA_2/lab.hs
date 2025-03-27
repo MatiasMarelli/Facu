@@ -1,13 +1,13 @@
 module Lab01 where
 
 import Data.List
-
+import Data.Char
 {-
 1) Corregir los siguientes programas de modo que sean aceptados por GHCi.
 -}
 
 -- a)
-not b = case b of
+not' b = case b of
     True -> False
     False -> True
 
@@ -103,16 +103,17 @@ max3 x y z = max x (max y z)
 swap::(a,b)->(b,a)
 swap (x,y)=(y,x)
 
-{- 
-3) Definir una función que determine si un año es bisiesto o no, de
-acuerdo a la siguiente definición:
+--3) Definir una función que determine si un año es bisiesto o no, de
+--acuerdo a la siguiente definición:
 
-año bisiesto 1. m. El que tiene un día más que el año común, añadido al mes de febrero. Se repite
-cada cuatro años, a excepción del último de cada siglo cuyo número de centenas no sea múltiplo
-de cuatro. (Diccionario de la Real Academia Espaola, 22ª ed.)
+--año bisiesto 1. m. El que tiene un día más que el año común, añadido al mes de febrero. Se repite
+--cada cuatro años, a excepción del último de cada siglo cuyo número de centenas no sea múltiplo
+--de cuatro. (Diccionario de la Real Academia Espaola, 22ª ed.)
 
-¿Cuál es el tipo de la función definida?
--}
+bisiesto::Int->Bool
+bisiesto x |  mod x 400 == 0 = True
+           |  (mod x 4) == 0 && (mod x 100) /= 0 = True
+           | otherwise = False
 
 {-
 4)
@@ -131,6 +132,9 @@ expresión sea válida:
 -}
 
 --v = [1, 2, 3] *$ 2 *$ 4
+(*$)::Num a => [a]->a->[a] 
+
+(*$) x y = map (y*) x
 
 
 {-
@@ -149,9 +153,18 @@ donde 0 <= a, b, c, d <= 'n'
 (d) 'unique', que dada una lista 'xs' de enteros, devuelve la lista
 'xs' sin elementos repetidos
 -}
+divisors::Int-> [Int]
+divisors x = [y | y<- [1..x],(mod x y) == 0]
 
---unique :: [Int] -> [Int]
---unique xs = [x | (x,i) <- zip xs [0..], not (elem x (take i xs))]
+matches::Int->[Int]->[Int]
+matches x xs = [z | z<-xs,z==x]
+
+cuadrupla:: Int->[(Int,Int,Int,Int)]
+cuadrupla n=[(x,y,z,w)| x<-[1..n],y<-[1..n],z<-[1..n],w<-[1..n],x^2+y^2 == z^2+w^2]
+
+
+unique :: [Int] -> [Int]
+unique xs = [x | (x,i) <- zip xs [0..], not (elem x (take i xs))]
 
 {- 
 6) El producto escalar de dos listas de enteros de igual longitud
@@ -160,6 +173,9 @@ posición) de ambas listas.  Definir una función 'scalarProduct' que
 devuelva el producto escalar de dos listas.
 
 Sugerencia: Usar las funciones 'zip' y 'sum'. -}
+
+scalarProduct:: [Int]->[Int]->Int
+scalarProduct xs ys = sum [x*y | (x,y)<-zip xs ys]
 
 {-
 7) Definir mediante recursión explícita
@@ -201,3 +217,49 @@ lista de aquellos que son letras (minúsculas o mayúsculas)
 k) 'masDe', que dada una lista de listas 'xss' y un
 número 'n', devuelve la lista de aquellas listas de 'xss'
 con longitud mayor que 'n' -}
+
+
+suma::Num a=> [a]->a
+suma [] = 0
+suma (x:xs) = x + suma xs
+
+alguno:: [Bool]->Bool
+alguno [] = False
+alguno (x:xs) = x || alguno xs
+
+todos:: [Bool]->Bool
+todos []=False
+todos [x]= x
+todos (x:xs)= x && todos xs
+
+codes::[Char]->[Int]
+codes [] = []
+codes (x:xs) = ord x : codes xs 
+
+restos::Integral  a => [a]->a ->[a]
+restos [] n = []
+restos (x:xs) n = (mod x n) : (restos xs n)
+
+cuadrados:: Num a => [a]->[a]
+cuadrados [] = []
+cuadrados (x:xs) = x^2 : cuadrados xs
+
+longitudes:: [[a]]->[Int]
+longitudes [] = []
+longitudes (xs:xss) = largo xs : longitudes xss
+
+orden::Num a => Ord a =>[(a,a)]->[(a,a)]
+orden [] = []
+orden (x:xs) = if (fst x) < (snd x) * 3 then x : orden xs else orden xs
+
+pares::[Int]->[Int]
+pares [] = []
+pares (x:xs) = if (mod x 2) == 0 then x : pares xs else pares xs
+
+letras:: [Char] -> [Char]
+letras [] = []
+letras (x:xs) = if isLetter x then x : letras xs else letras xs
+
+masDe:: [[a]]-> Int ->[[a]]
+masDe [] n = []
+masDe (xs:xss) n = if largo xs > n then xs : masDe xss n else masDe xss n
