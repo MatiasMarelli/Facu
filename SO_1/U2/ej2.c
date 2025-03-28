@@ -45,7 +45,8 @@ void f (){
   int *a=malloc(sizeof(char)*2^50);
   //La memoria no cambia (supongo q el sistema operativo no debe ceder la memoria salvo que sea utilizada y/o se empiece a llenar)
   printf("\nPid:%d\n",getpid());
-  while(1);
+  //sleep(10);
+  //exit(0);
 }
 
 void g (){
@@ -54,15 +55,20 @@ void g (){
     printf("\nPid:%d\n",getpid());
     printf("sleeping...\n");
     sleep(10); 
-    while(1);
+    //while(1);
     execl("./test","./test",NULL);
   }else{
     wait(0);
     printf("Termino Hijo\n");
   }
 }
+void yes(){
+  char buffer[2];
+  scanf("%s",buffer);
+  if (!strcmp(buffer,"y")){printf("TIRO YES!!\n");}
+}
 
 int main(){  
-  g();
+  f();
   return 0;
 }
