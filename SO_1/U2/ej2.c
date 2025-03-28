@@ -3,6 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <math.h>
+#include <fcntl.h>
+
 
 void a(){
   char buffer[255];
@@ -50,13 +53,29 @@ void f (){
 }
 
 void g (){
+  double size=pow(2,30);
+  
   pid_t pid=fork();
   if(!pid){
     printf("\nPid:%d\n",getpid());
     printf("sleeping...\n");
-    sleep(10); 
+    sleep(10);
+    printf("malloc...\n");
+    sleep(1);
+    char *a=malloc(size*sizeof(char));
+    int i=0;
+    while(i<size){
+      a[i]='a';
+      
+      //printf("%d\n",i);
+      i++;
+    }
+    
+    printf("SIZE=%f\n",size);
+    sleep(10);
+    free(a); 
     //while(1);
-    execl("./test","./test",NULL);
+    //execl("./test","./test",NULL);
   }else{
     wait(0);
     printf("Termino Hijo\n");
@@ -68,7 +87,34 @@ void yes(){
   if (!strcmp(buffer,"y")){printf("TIRO YES!!\n");}
 }
 
-int main(){  
-  f();
+void fd(){
+  pid_t pid=fork();
+  int g=open("carlos.txt",'r');
+  int f=open("Luis.txt",'r');
+  if(!pid){
+    sleep(1);
+    printf("NENE\n");
+    printf("%d %d PID: %d\n", f,g, getpid());
+    sleep(3);
+  }else{
+    printf("PAPA\n");
+    printf("%d %d PID: %d\n", f,g, getpid());
+    wait(NULL);
+    sleep(3);
+  }
+}
+
+int main(){
+  double size=pow(2,30);  
+  int* a=malloc(sizeof(int)*size);
+  int i=0;
+  sleep(2);
+  while(i<size){
+    a[i]=0;
+    i++;
+  }
+  sleep(2);
+  free(a);
+  //while(1);
   return 0;
 }
