@@ -9,7 +9,7 @@
 
 
 void exe(char** args){
-  if(execvp(args[0],args) == -1){printf("ERROR, arg:%s",args[0]);kill(getpid(),SIGKILL);}
+  if(execvp(args[0],args) == -1){kill(getpid(),SIGKILL);}
 }
 
 int main(){
