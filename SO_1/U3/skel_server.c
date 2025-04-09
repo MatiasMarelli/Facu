@@ -74,6 +74,8 @@ void wait_for_client(int sock){
   exit(0);
     
   }else{ 
+    close(csock);
+    wait(NULL);
     wait_for_client(sock);
 
   }
