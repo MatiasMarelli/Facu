@@ -13,11 +13,15 @@ typedef unsigned (*HashFunction)(void *data);
 
 typedef struct _HashTable *HashTable;
 
+#define OCCUPIED 1 
+#define FREE 0 
+
 /**
  * Casillas en la que almacenaremos los datos de la tabla hash.
  */
 typedef struct {
-  char* data;
+  char* data ;
+  int state;
   //void* data
   /* GList data; */
 } HashBox;

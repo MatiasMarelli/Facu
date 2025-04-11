@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <string.h>
-
+#include <sys/wait.h>
 
 #define PORT 4040
 
