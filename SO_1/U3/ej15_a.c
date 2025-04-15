@@ -1,15 +1,18 @@
-
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/wait.h>
+#include <sys/socket.h>
+#include <signal.h>
+#include <fcntl.h>
 #include <pthread.h>
+#include <sys/epoll.h>
+#include <sys/un.h>
+#include <arpa/inet.h>
 
-#define PORT 4040
+
+#define PORT 3942
 
 int U=0;
   
@@ -35,8 +38,9 @@ int fd_readline(int fd, char* buff){
 }
 
 
-void handle_conn(int csock){
+void handle_conn(void* sock){
   char buff[200];
+  int csock = *(int*)sock;
   int rc;
   
   while(1){
@@ -64,22 +68,16 @@ void handle_conn(int csock){
 
 void wait_for_client(int sock){
   int csock;
-
+  pthread_t hilo;
   csock = accept(sock,NULL,NULL);
   if(csock < 0) quit("Accept");
   
-  pid_t pid = fork();
-
-  if(!pid){
-  handle_conn(csock);
-  exit(0);
-    
-  }else{ 
-    close(csock);
-    wait(NULL);
-    wait_for_client(sock);
-
-  }
+  pthread_create(&hilo,NULL,handle_conn,&csock);
+  
+  wait_for_client(sock);
+  
+  pthread_join(hilo,NULL);
+  close(csock);
 }
 
 
