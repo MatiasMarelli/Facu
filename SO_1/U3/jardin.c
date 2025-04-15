@@ -120,7 +120,6 @@ void* molinete2(void* arg){
     visitante++;
     pthread_mutex_unlock(&mutex_visitante);
 
-
   }
 
   return NULL;

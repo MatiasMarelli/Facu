@@ -11,6 +11,8 @@
 int i=0;
 int result=0;
 
+pthread_mutex_t mutex_visitante = PTHREAD_MUTEX_INITIALIZER;  
+
 int* make_array(int n){
   int* a=malloc(sizeof(int)*n);
   for(int j=1;j <= n; j++){
@@ -22,21 +24,33 @@ int* make_array(int n){
 void* sum_arr(void** arg){
   int n=*(int*)arg[1];
   int* a=(int*)arg[0];
+  for(;i<n;){
+    pthread_mutex_lock(&mutex_visitante);
+    result += a[i];
+    i++;
+    pthread_mutex_unlock(&mutex_visitante);
+  }
+  return NULL;
+}
+void* sum_arr2(void** arg){
+  int n=*(int*)arg[1];
+  int* a=(int*)arg[0];
   for(;i<n;i++){
     result += a[i];
   }
   
+  return NULL;
 }
 
 int sum(int n){return (n*(n+1)/2);}
 
 int main(){
-  int* n;
+  int* n=malloc(sizeof(int));
   srand(time(NULL));
-  *n=rand()%7483647;
-  printf("\n\t %d \t",*n);
-  int* arr;
-  arr=make_array(*n);
+  *n=rand()%100000;
+  printf("\n\t %d \t\n",*n);
+  
+  int* arr=make_array(*n);
   void** args =malloc(sizeof(void*)*2);
   args[0]=(void*)arr;
   args[1]=(void*)n;
@@ -48,9 +62,11 @@ int main(){
   
   pthread_join(h1,NULL);
   pthread_join(h2,NULL);
+
+  pthread_mutex_destroy(&mutex_visitante);
   
   printf("Result sum thread: %d\n",result);  
-  printf("Suma Gauss: %d",sum(*n));
+  printf("Suma Gauss: %d \n",sum(*n));
 
   return 0;
 }
