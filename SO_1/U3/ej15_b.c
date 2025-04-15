@@ -140,7 +140,7 @@ int main(){
 
   if(epoll_ctl(epoll_fd,EPOLL_CTL_ADD,listen_sock,&ev) == -1){quit("epoll_ctl : listen_sock");}
   while(1){
-    nfds=epoll_wait(epoll_fd,events,MAX_EVENTS,20000);
+    nfds=epoll_wait(epoll_fd,events,MAX_EVENTS,-1);
     if(nfds==-1){quit("epoll_wait");}
     for(int n=0;n<nfds;++n){
       if(events[n].data.fd == listen_sock){
