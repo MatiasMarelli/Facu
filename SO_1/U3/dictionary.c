@@ -356,20 +356,20 @@ int main(){
   struct sigaction sa1, sa2, sa3;
   
   
-  sa3.sa_flags=SA_RESTART | SA_NODEFER;
   sa2.sa_flags=SA_RESTART | SA_NODEFER;
   sa1.sa_flags=SA_RESTART | SA_NODEFER;
+  
+  sa3.sa_handler=kill_server;
+  sa3.sa_flags=SA_RESTART | SA_NODEFER;
+  sigaction(SIGINT,&sa3,NULL);
+  sigaction(SIGSEGV,&sa3,NULL);
   
   
   sa1.sa_handler=child_call;
   sa2.sa_handler=end_loop;
-  sa3.sa_handler=kill_server;
-  
   
   sigaction(SIGUSR1,&sa1,NULL);
   sigaction(SIGUSR2,&sa2,NULL);
-  sigaction(SIGINT,&sa3,NULL);
-  sigaction(SIGSEGV,&sa3,NULL);
 
   loop = malloc(sizeof(int));
   sig = malloc(sizeof(int));
