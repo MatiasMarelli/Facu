@@ -26,7 +26,9 @@ int epoll_fd, nfds, listen_sock,csock;
 HashTable table;
 
 void* copy (void* data){
-  return data;
+  char str[256];
+  strcpy(str,(char*)data);
+  return str;
 }
 
 int comp(void* data1, void* data2){
@@ -127,7 +129,7 @@ int fd_readline(int fd, char* buff){
 void dictionary(char** args,int csock){
   
   int key = atoi(args[1]);
-  printf("KEY:%d\n",key);
+  
   char* msg=malloc(sizeof(char)*100);
   if(strcmp(args[0],"PUT") == 0){
     pthread_mutex_lock(&mutex);
@@ -139,8 +141,8 @@ void dictionary(char** args,int csock){
   }else if(strcmp(args[0],"GET") == 0){
     pthread_mutex_lock(&mutex);
     sprintf(msg,"%s\n",(char*)hashtable_search_(table,key));
-    pthread_mutex_unlock(&mutex);
-    printf("GET:%s\n",(char*)hashtable_search_(table,key));
+    pthre ad_mutex_unlock(&mutex);
+    
     send(csock,msg,strlen(msg)+1,0);
 
   }else if(strcmp(args[0],"DEL") == 0){
@@ -173,12 +175,10 @@ char** parse(char* buffer){
   
   while(j<2){
     
-    printf("%s\n",buffer);
     parse = strchr(buffer,' ');
     if(parse != NULL){
 
       int len= parse-buffer;
-      printf("LEN:%d\n",len);
       args[j]=sub_str(buffer,len);
     }else{
       args[j]=buffer;
@@ -188,8 +188,6 @@ char** parse(char* buffer){
     
     if(j==1){
       if(strcmp(args[0],"GET")==0 || strcmp(args[0],"DEL")==0){
-        printf("CASO GET\n");
-        //strcpy(buffer,parse);
       }else{
         strcpy(buffer,parse+1);
       }
@@ -203,7 +201,7 @@ char** parse(char* buffer){
   
   args[2]=buffer;
   
-  for(int i=0;i<3;i++){printf("i:%d,%s\n",i,args[i]);}
+  
   return args;
 }
 
@@ -226,10 +224,10 @@ void handle_conn(int csock){
     char** args=parse(buff);
     dictionary(args,csock);
 
-    /* for(int i=0;i<3;i++){
+    for(int i=0;i<3;i++){
       free(args[i]);
     }
-    free(args);*/
+    free(args);
   } 
 }
 

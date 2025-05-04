@@ -107,8 +107,12 @@ g2btAux (NodeG a (y:ys)) (x:xs) = NodeB (g2btAux y ys) a (g2btAux x xs)
       cantidad de elementos posibles para este nivel y en el nivel tercer hay 3 elementos siendo la cantidad máxima 4.
    -}
 
+-- data BinTree a = EB | NodeB (BinTree a) a (BinTree a)
+
 dcn :: BinTree a -> [a]
-dcn = undefined
+dcn EB = []
+dcn (NodeB EB r EB) = [r]
+dcn (NodeB l a r) = 
 
 {- b) maxn, que dado un árbol devuelva la profundidad del nivel completo
       más profundo. Por ejemplo, maxn t = 2   -}

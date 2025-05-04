@@ -2,6 +2,7 @@
   "C_Cpp.errorSquiggles": "disabled",
   "files.associations": {
     "mihash.h": "c",
-    "a.out.h": "c"
+    "a.out.h": "c",
+    "pthread.h": "c"
   }
 }
