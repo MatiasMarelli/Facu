@@ -3,6 +3,7 @@
   "files.associations": {
     "mihash.h": "c",
     "a.out.h": "c",
-    "pthread.h": "c"
+    "pthread.h": "c",
+    "limits": "c"
   }
 }

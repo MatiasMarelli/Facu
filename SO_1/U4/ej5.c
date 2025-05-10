@@ -7,11 +7,13 @@
 #define SILLAS 5
 
 int cant_clientes=0;
-sem_t rojito;
+sem_t rojito,vaiolet,shelou;
 pthread_mutex_t barba=PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t atendido=PTHREAD_MUTEX_INITIALIZER;
 int n;
 int awake=0;
+
+
 
 pthread_mutex_t* mutex_cli;
 pthread_cond_t b,c;
@@ -24,10 +26,14 @@ void cortando(){
 }
 
 void pagando(int n){
+  sem_wait(&vaiolet);
   printf("Me cortaron id:%d\n",n);
+  sem_post(&shelou);
 }
 void me_pagan(){
+  sem_post(&vaiolet);
   printf("Corte\n");
+  sem_wait(&shelou);
 }
 
 void irse(int id){
@@ -98,6 +104,8 @@ int main(){
   mutex_cli = malloc(sizeof(pthread_mutex_t)*n);
   pthread_t barbero,clientes[n];
   sem_init(&rojito,0,SILLAS);
+  sem_init(&vaiolet,0,0);
+  sem_init(&shelou,0,0);
 
 
   pthread_create(&barbero,NULL,el_tijeras,NULL);
@@ -111,5 +119,7 @@ int main(){
   for(int i=0;i<n;i++) pthread_mutex_destroy(&mutex_cli[i]);
   free(mutex_cli);
   sem_destroy(&rojito);
+  sem_destroy(&vaiolet);
+  sem_destroy(&shelou);
   return 0;
 }

@@ -15,7 +15,27 @@ int arr[ARRLEN];
 sem_t amarillito;
 pthread_cond_t cv,non_write;
 pthread_mutex_t escri=PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t reader[M];
+pthread_mutex_t reader=PTHREAD_MUTEX_INITIALIZER;
+
+void reader_lock(){
+
+  pthread_mutex_lock(&reader);
+    while(writing>0){
+      pthread_cond_wait(&non_write,&reader);
+    }
+    reading++;
+    pthread_mutex_unlock(&reader);
+}
+
+void reader_unlock(){
+  pthread_mutex_lock(&reader)
+  reading--;
+  if (!reading) pthread_cond_signal(&cv);
+    pthread_mutex_unlock(&reader);
+}
+
+
+
 
 void * escritor(void *arg){
 
@@ -49,13 +69,8 @@ void * lector(void *arg){
   while (1) {
 
     sleep(random() % 3);
+    reader_lock();
     
-    pthread_mutex_lock(&reader[num]);
-    while(writing>0){
-      pthread_cond_wait(&non_write,&reader[num]);
-    }
-
-    reading++;
     printf("Lector %d\n",num);
     v = arr[0];
     
@@ -70,9 +85,9 @@ void * lector(void *arg){
       printf("Lector %d, dato %d\n", num, v);
     
     printf("Dejo lector %d\n",num);
-    reading--;
-    pthread_cond_signal(&cv);
-    pthread_mutex_unlock(&reader[num]);
+
+    reader_unlock();
+    
   }
 
   return NULL;
@@ -84,7 +99,7 @@ int main(){
   sem_init(&amarillito,0,1);
   int i;
   for (i = 0; i < M; i++){
-    pthread_mutex_init(&reader[i],NULL);
+    //pthread_mutex_init(&reader[i],NULL);
     pthread_create(&lectores[i], NULL, lector, i + (void*)0);
   }
   for (i = 0; i < N; i++)
