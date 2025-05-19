@@ -28,7 +28,7 @@ void reader_lock(){
 }
 
 void reader_unlock(){
-  pthread_mutex_lock(&reader)
+  pthread_mutex_lock(&reader);
   reading--;
   if (!reading) pthread_cond_signal(&cv);
     pthread_mutex_unlock(&reader);
@@ -53,7 +53,7 @@ void * escritor(void *arg){
     for (i = 0; i < ARRLEN; i++)
       arr[i] = num;
     
-    printf("Escritor %d dejo de escribir\n", num);
+    
     writing--;
     pthread_cond_broadcast(&non_write);
     pthread_mutex_unlock(&escri);
@@ -70,21 +70,20 @@ void * lector(void *arg){
 
     sleep(random() % 3);
     reader_lock();
-    
-    printf("Lector %d\n",num);
+  
     v = arr[0];
     
     for (i = 1; i < ARRLEN; i++) {
       if (arr[i] != v)
         break;
     }
-    printf("\tREADING:%d\n",reading);
+  
     if (i < ARRLEN)
       printf("Lector %d, error de lectura\n", num);
     else
       printf("Lector %d, dato %d\n", num, v);
     
-    printf("Dejo lector %d\n",num);
+    
 
     reader_unlock();
     
