@@ -4,6 +4,7 @@
     "mihash.h": "c",
     "a.out.h": "c",
     "pthread.h": "c",
-    "limits": "c"
+    "limits": "c",
+    "mpi_reduce": "c"
   }
 }
